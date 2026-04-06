@@ -1,16 +1,26 @@
-// compiler.js
-
+import fs from "fs";
 import { parse } from "./parser.js";
-// (later)
-// import { analyze } from "./analyzer.js";
-// import { generate } from "./generator.js";
+import { analyze } from "./analyzer.js";
+import { optimize } from "./optimizer.js";
+import { generate } from "./generator.js";
 
-const source = readFile(...);
+const file = process.argv[2];
 
-const ast = parse(source);   // ✅ AST created here
+if (!file) {
+  console.error("Usage: node src/compiler.js <file>");
+  process.exit(1);
+}
 
-console.log(ast);            // debug
+const source = fs.readFileSync(file, "utf-8");
 
-// later:
-analyze(ast);
-generate(ast);
+try {
+  const ast = parse(source);
+  analyze(ast);
+  const optimized = optimize(ast);
+  const output = generate(optimized);
+
+  console.log(output);
+} catch (e) {
+  console.error("Compilation error:");
+  console.error(e.message);
+}
