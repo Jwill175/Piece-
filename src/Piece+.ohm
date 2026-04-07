@@ -1,0 +1,36 @@
+PiecePlus {
+  Program = Statement*
+
+  Statement
+    = PrintStmt
+    | VarDecl
+    | Assignment
+
+  PrintStmt = "print" String
+
+  VarDecl
+    = "let" ident "=" Expr        -- dynamic
+    | Type ident "=" Expr         -- typed
+
+  Assignment = ident "=" Expr
+
+  Type = "int" | "float" | "str"
+
+  Expr = AddExpr
+
+  AddExpr
+    = AddExpr "+" MulExpr  -- plus
+    | MulExpr
+
+  MulExpr
+    = space
+    | ident
+    | String
+
+  String = "\"" (~"\"" any)* "\""
+
+  ident = letter alnum*
+  space = digit+ ("." digit+)?   
+
+  space += " " | "\n" | "\t"
+}
