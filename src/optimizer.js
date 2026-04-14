@@ -1,8 +1,12 @@
-export function optimize(ast) {
+function optimize(ast) {
   function fold(node) {
     switch (node.kind) {
       case "Program":
         node.statements = node.statements.map(fold);
+        return node;
+
+      case "Print":
+        node.argument = fold(node.argument);
         return node;
 
       case "BinaryExpr":
@@ -28,3 +32,5 @@ export function optimize(ast) {
 
   return fold(ast);
 }
+
+module.exports = { optimize };

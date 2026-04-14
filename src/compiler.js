@@ -1,8 +1,8 @@
-import fs from "fs";
-import { parse } from "./parser.js";
-import { analyze } from "./analyzer.js";
-import { optimize } from "./optimizer.js";
-import { generate } from "./generator.js";
+const fs = require("fs");
+const { parse } = require("./parser.js");
+const { analyze } = require("./analyzer.js");
+const { optimize } = require("./optimizer.js");
+const { generate } = require("./generator.js");
 
 const file = process.argv[2];
 
@@ -24,3 +24,10 @@ try {
   console.error("Compilation error:");
   console.error(e.message);
 }
+
+module.exports = { compile: (source) => {
+  const ast = parse(source);
+  analyze(ast);
+  const optimized = optimize(ast);
+  return generate(optimized);
+}};

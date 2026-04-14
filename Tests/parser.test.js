@@ -25,6 +25,6 @@ describe("Parser", () => {
   });
 
   it("throws on bad syntax", () => {
-    expect(() => parse("int = 5")).toThrow();
+    expect(() => parse("int x =")).toThrow();
   });
 });

@@ -1,4 +1,4 @@
-export function generate(ast) {
+function generate(ast) {
   function gen(node) {
     switch (node.kind) {
       case "Program":
@@ -29,3 +29,5 @@ export function generate(ast) {
 
   return gen(ast);
 }
+
+module.exports = { generate };

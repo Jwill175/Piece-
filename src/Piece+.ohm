@@ -6,7 +6,7 @@ PiecePlus {
     | VarDecl
     | Assignment
 
-  PrintStmt = "print" String
+  PrintStmt = "print" Expr
 
   VarDecl
     = "let" ident "=" Expr        -- dynamic
@@ -23,14 +23,12 @@ PiecePlus {
     | MulExpr
 
   MulExpr
-    = space
+    = number
     | ident
     | String
 
   String = "\"" (~"\"" any)* "\""
 
   ident = letter alnum*
-  space = digit+ ("." digit+)?   
-
-  space += " " | "\n" | "\t"
+  number = digit+ ("." digit+)?
 }

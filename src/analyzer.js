@@ -1,4 +1,4 @@
-export function analyze(ast) {
+function analyze(ast) {
   const env = new Map();
 
   function check(node) {
@@ -69,3 +69,5 @@ export function analyze(ast) {
   check(ast);
   return ast;
 }
+
+module.exports = { analyze };

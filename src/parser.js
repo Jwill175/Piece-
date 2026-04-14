@@ -1,5 +1,5 @@
-import ohm from "ohm-js";
-import fs from "fs";
+const ohm = require ("ohm-js");
+const fs = require ("fs");
 
 const grammar = ohm.grammar(
   fs.readFileSync("src/piece+.ohm", "utf-8")
@@ -20,22 +20,22 @@ const semantics = grammar.createSemantics().addOperation("ast", {
     };
   },
 
-  VarDecl(...children) {
-    if (children[0].sourceString === "let") {
-      return {
-        kind: "VarDecl",
-        name: children[1].sourceString,
-        type: "any",
-        initializer: children[3].ast(),
-      };
-    } else {
-      return {
-        kind: "VarDecl",
-        name: children[1].sourceString,
-        type: children[0].sourceString,
-        initializer: children[3].ast(),
-      };
-    }
+  VarDecl_dynamic(_let, id, _eq, expr) {
+    return {
+      kind: "VarDecl",
+      name: id.sourceString,
+      type: "any",
+      initializer: expr.ast(),
+    };
+  },
+
+  VarDecl_typed(type, id, _eq, expr) {
+    return {
+      kind: "VarDecl",
+      name: id.sourceString,
+      type: type.sourceString,
+      initializer: expr.ast(),
+    };
   },
 
   Assignment(id, _eq, expr) {
@@ -59,14 +59,14 @@ const semantics = grammar.createSemantics().addOperation("ast", {
     return expr.ast();
   },
 
-  number(_) {
+  number(_digits, _dot, _fraction) {
     return {
       kind: "Number",
       value: Number(this.sourceString),
     };
   },
 
-  ident(_) {
+  ident(letter, rest) {
     return {
       kind: "Identifier",
       name: this.sourceString,
@@ -81,8 +81,10 @@ const semantics = grammar.createSemantics().addOperation("ast", {
   },
 });
 
-export function parse(source) {
+function parse(source) {
   const match = grammar.match(source);
   if (match.failed()) throw new Error(match.message);
   return semantics(match).ast();
 }
+
+module.exports = { parse };
