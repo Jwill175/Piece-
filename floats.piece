@@ -1,0 +1,7 @@
+float pi = 3.14
+float radius = 2.5
+float area = radius + pi
+print area
+print pi
+
+

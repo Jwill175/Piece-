@@ -1,0 +1,6 @@
+let value = 100
+print value
+value = 200
+print value
+value = 300
+print value

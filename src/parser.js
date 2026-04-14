@@ -1,8 +1,14 @@
-const ohm = require ("ohm-js");
-const fs = require ("fs");
+import * as ohm from "ohm-js";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const grammarPath = path.join(__dirname, "Piece+.ohm");
 const grammar = ohm.grammar(
-  fs.readFileSync("src/piece+.ohm", "utf-8")
+  fs.readFileSync(grammarPath, "utf-8")
 );
 
 const semantics = grammar.createSemantics().addOperation("ast", {
@@ -16,6 +22,13 @@ const semantics = grammar.createSemantics().addOperation("ast", {
   PrintStmt(_print, expr) {
     return {
       kind: "Print",
+      argument: expr.ast(),
+    };
+  },
+
+  TraceStmt(_trace, _print, expr) {
+    return {
+      kind: "Trace",
       argument: expr.ast(),
     };
   },
@@ -87,4 +100,4 @@ function parse(source) {
   return semantics(match).ast();
 }
 
-module.exports = { parse };
+export { parse };

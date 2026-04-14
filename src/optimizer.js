@@ -1,4 +1,4 @@
-function optimize(ast) {
+export function optimize(ast) {
   function fold(node) {
     switch (node.kind) {
       case "Program":
@@ -6,6 +6,10 @@ function optimize(ast) {
         return node;
 
       case "Print":
+        node.argument = fold(node.argument);
+        return node;
+
+      case "Trace":
         node.argument = fold(node.argument);
         return node;
 
@@ -32,5 +36,3 @@ function optimize(ast) {
 
   return fold(ast);
 }
-
-module.exports = { optimize };

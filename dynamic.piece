@@ -1,0 +1,5 @@
+let x = 5
+let y = 10
+print x + y
+let z = x + y
+print z

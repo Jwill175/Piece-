@@ -42,6 +42,9 @@ function analyze(ast) {
       case "Print":
         return check(node.argument);
 
+      case "Trace":
+        return check(node.argument);
+
       case "BinaryExpr":
         const left = check(node.left);
         const right = check(node.right);
@@ -70,4 +73,4 @@ function analyze(ast) {
   return ast;
 }
 
-module.exports = { analyze };
+export { analyze };

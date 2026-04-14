@@ -1,0 +1,6 @@
+str greeting = "Hello"
+str name = "Piece"
+print greeting
+print name
+str message = "Welcome to Piece+"
+print message

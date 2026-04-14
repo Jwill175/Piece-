@@ -2,9 +2,12 @@ PiecePlus {
   Program = Statement*
 
   Statement
-    = PrintStmt
+    = TraceStmt
+    | PrintStmt
     | VarDecl
     | Assignment
+
+  TraceStmt = "trace" "print" Expr
 
   PrintStmt = "print" Expr
 

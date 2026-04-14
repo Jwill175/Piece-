@@ -1,0 +1,6 @@
+int count = 5
+int total = count + 15
+print count
+print total
+str status = "Done"
+print status
