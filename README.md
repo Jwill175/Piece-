@@ -151,7 +151,7 @@ By combining ease-of-use with strong compile-time guarantees, Piece+ helps learn
 
 ```bash
 npm install
-node src/compiler.js example.px
+node src/compiler.js example.piece
 ```
 
 ---
