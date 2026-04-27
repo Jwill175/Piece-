@@ -1,5 +1,5 @@
 # Piece+
-
+<img width="1561" height="1536" alt="IMG_6703" src="https://github.com/user-attachments/assets/79a444ae-f410-4b2d-af22-761e6d5f8102" />
 ## A Beginner-Friendly Bridge Between Python and C
 
 Piece+ is a programming language designed to help new developers take their first steps into coding while gradually introducing the deeper concepts found in lower-level languages. Inspired by the simplicity of Python and the structure of C, Piece+ allows learners to write clean, readable code while building an understanding of types, memory concepts, and program structure. The goal is to make the transition from beginner-friendly scripting to more complex systems programming feel natural and intuitive.
