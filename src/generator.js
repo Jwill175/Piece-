@@ -30,6 +30,16 @@ export function generate(ast) {
       case "Program":
         return node.statements.map(s => gen(s, variables)).join("\n");
 
+      case "FunctionDecl": {
+        const params = node.params.map(p => p.name).join(", ");
+        const bodyStatements = node.body.map(stmt => gen(stmt, variables));
+        const body = bodyStatements.map(s => "  " + s).join("\n");
+        return `function ${node.name}(${params}) {\n${body}\n}`;
+      }
+
+      case "ReturnStmt":
+        return `return ${gen(node.value, variables)};`;
+
       case "Print":
         return `console.log(${gen(node.argument, variables)});`;
 
@@ -61,7 +71,11 @@ export function generate(ast) {
         return `${node.name} = ${gen(node.value, variables)};`;
 
       case "BinaryExpr":
-        return `${gen(node.left, variables)} + ${gen(node.right, variables)}`;
+        return `${gen(node.left, variables)} ${node.op} ${gen(node.right, variables)}`;
+
+      case "CallExpr":
+        const args = node.arguments.map(arg => gen(arg, variables)).join(", ");
+        return `${node.name}(${args})`;
 
       case "Identifier":
         return node.name;

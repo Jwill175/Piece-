@@ -21,9 +21,35 @@ export function optimize(ast) {
           node.left.kind === "Number" &&
           node.right.kind === "Number"
         ) {
+          let result;
+          switch (node.op) {
+            case "+":
+              result = node.left.value + node.right.value;
+              break;
+            case "<":
+              result = node.left.value < node.right.value ? 1 : 0;
+              break;
+            case ">":
+              result = node.left.value > node.right.value ? 1 : 0;
+              break;
+            case "<=":
+              result = node.left.value <= node.right.value ? 1 : 0;
+              break;
+            case ">=":
+              result = node.left.value >= node.right.value ? 1 : 0;
+              break;
+            case "==":
+              result = node.left.value === node.right.value ? 1 : 0;
+              break;
+            case "!=":
+              result = node.left.value !== node.right.value ? 1 : 0;
+              break;
+            default:
+              return node;
+          }
           return {
             kind: "Number",
-            value: node.left.value + node.right.value,
+            value: result,
           };
         }
 

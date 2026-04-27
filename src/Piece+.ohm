@@ -1,11 +1,20 @@
 PiecePlus {
-  Program = Statement*
+  Program = (FunctionDecl | Statement)*
+
+  FunctionDecl = "func" ident "(" ParamList? ")" "->" Type "{" Statement* "}"
+
+  ParamList = Param ("," Param)*
+
+  Param = Type ident
 
   Statement
     = TraceStmt
     | PrintStmt
     | VarDecl
+    | ReturnStmt
     | Assignment
+
+  ReturnStmt = "return" Expr
 
   TraceStmt = "trace" "print" Expr
 
@@ -19,13 +28,29 @@ PiecePlus {
 
   Type = "int" | "float" | "str"
 
-  Expr = AddExpr
+  Expr = CompExpr
+
+  CompExpr
+    = AddExpr CompOp AddExpr  -- comparison
+    | AddExpr
+
+  CompOp = "==" | "!=" | "<=" | ">=" | "<" | ">"
 
   AddExpr
     = AddExpr "+" MulExpr  -- plus
     | MulExpr
 
   MulExpr
+    = CallExpr
+    | Primary
+
+  CallExpr = ident "(" ArgList? ")"
+
+  ArgList = Arg ("," Arg)*
+
+  Arg = Expr
+
+  Primary
     = number
     | ident
     | String

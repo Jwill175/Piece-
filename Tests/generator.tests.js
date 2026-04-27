@@ -16,4 +16,28 @@ describe("Generator", () => {
 
     expect(code).toContain("let x = 5");
   });
+
+  it("generates JS for comparison operators", () => {
+    const ast = parse("print 5 > 3");
+    const code = generate(ast);
+
+    expect(code).toContain("5 > 3");
+  });
+
+  it("generates JS for equality operators", () => {
+    const ast = parse("print x == 10");
+    const code = generate(ast);
+
+    expect(code).toContain("x == 10");
+  });
+
+  it("generates JS for all comparison operators", () => {
+    const operators = ["<", ">", "<=", ">=", "==", "!="];
+
+    for (const op of operators) {
+      const ast = parse(`print 5 ${op} 3`);
+      const code = generate(ast);
+      expect(code).toContain(`5 ${op} 3`);
+    }
+  });
 });

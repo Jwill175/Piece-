@@ -24,6 +24,60 @@ describe("Parser", () => {
     expect(ast.statements[0].argument.kind).toBe("BinaryExpr");
   });
 
+  it("parses less than comparison", () => {
+    const ast = parse("print 5 < 10");
+
+    expect(ast.statements[0].argument).toMatchObject({
+      kind: "BinaryExpr",
+      op: "<",
+    });
+  });
+
+  it("parses greater than comparison", () => {
+    const ast = parse("print 10 > 5");
+
+    expect(ast.statements[0].argument).toMatchObject({
+      kind: "BinaryExpr",
+      op: ">",
+    });
+  });
+
+  it("parses equality comparison", () => {
+    const ast = parse("print x == 5");
+
+    expect(ast.statements[0].argument).toMatchObject({
+      kind: "BinaryExpr",
+      op: "==",
+    });
+  });
+
+  it("parses not equal comparison", () => {
+    const ast = parse("print x != 5");
+
+    expect(ast.statements[0].argument).toMatchObject({
+      kind: "BinaryExpr",
+      op: "!=",
+    });
+  });
+
+  it("parses less than or equal comparison", () => {
+    const ast = parse("print x <= 10");
+
+    expect(ast.statements[0].argument).toMatchObject({
+      kind: "BinaryExpr",
+      op: "<=",
+    });
+  });
+
+  it("parses greater than or equal comparison", () => {
+    const ast = parse("print x >= 10");
+
+    expect(ast.statements[0].argument).toMatchObject({
+      kind: "BinaryExpr",
+      op: ">=",
+    });
+  });
+
   it("throws on bad syntax", () => {
     expect(() => parse("int x =")).toThrow();
   });

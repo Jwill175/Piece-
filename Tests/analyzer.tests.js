@@ -30,4 +30,25 @@ describe("Analyzer", () => {
 
     expect(() => analyze(ast)).toThrow();
   });
+
+  it("accepts comparison operators", () => {
+    const ast = parse(`
+      int x = 5
+      print x > 3
+      print x < 10
+      print x == 5
+      print x != 10
+    `);
+
+    expect(() => analyze(ast)).not.toThrow();
+  });
+
+  it("rejects string comparison", () => {
+    const ast = parse(`
+      str name = "Alice"
+      print name > "Bob"
+    `);
+
+    expect(() => analyze(ast)).toThrow();
+  });
 });
