@@ -5,22 +5,59 @@ import { optimize } from "./optimizer.js";
 import { generate } from "./generator.js";
 import { formatErrorLocation } from "./errors.js";
 
-const file = process.argv[2];
+const args = process.argv.slice(2);
+
+// Check for a flag like --syntax, --parse, --analyze, --optimize, --generate
+const flagIndex = args.findIndex(a => a.startsWith("--"));
+const flag = flagIndex !== -1 ? args[flagIndex] : null;
+const file = args.find(a => !a.startsWith("--"));
 
 if (!file) {
-  console.error("Usage: node src/compiler.js <file>");
+  console.error("Usage: node src/compiler.js [--syntax|--parse|--analyze|--optimize|--generate] <file>");
   process.exit(1);
 }
 
 const source = fs.readFileSync(file, "utf-8");
 
 try {
+  if (flag === "--syntax") {
+    // Just check if it parses without error
+    parse(source);
+    console.log(`✅ Syntax OK: ${file}`);
+    process.exit(0);
+  }
+
   const ast = parse(source);
+
+  if (flag === "--parse") {
+    console.log(JSON.stringify(ast, null, 2));
+    process.exit(0);
+  }
+
   analyze(ast, source);
+
+  if (flag === "--analyze") {
+    console.log(`✅ Analysis OK: ${file}`);
+    console.log(JSON.stringify(ast, null, 2));
+    process.exit(0);
+  }
+
   const optimized = optimize(ast);
+
+  if (flag === "--optimize") {
+    console.log(`✅ Optimized AST: ${file}`);
+    console.log(JSON.stringify(optimized, null, 2));
+    process.exit(0);
+  }
+
   const output = generate(optimized);
 
-  // Display formatted output
+  if (flag === "--generate") {
+    console.log(output);
+    process.exit(0);
+  }
+
+  // Default: full pipeline with pretty output
   console.log(`\n${'='.repeat(50)}`);
   console.log(`📄 INPUT: ${file}`);
   console.log(`${'='.repeat(50)}\n`);
@@ -35,7 +72,6 @@ try {
   console.log(`▶️ EXECUTION OUTPUT`);
   console.log(`${'='.repeat(50)}\n`);
 
-  // Execute the generated JavaScript
   try {
     eval(output);
   } catch (runtimeError) {
@@ -43,6 +79,7 @@ try {
   }
 
   console.log(`\n${'='.repeat(50)}\n`);
+
 } catch (e) {
   console.log(`\n${'='.repeat(50)}`);
   console.log(`❌ ${e.type || "COMPILATION ERROR"}`);
@@ -82,4 +119,3 @@ export function compile(source) {
   const optimized = optimize(ast);
   return generate(optimized);
 }
-
