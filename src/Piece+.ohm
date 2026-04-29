@@ -12,11 +12,13 @@ PiecePlus {
     | PrintStmt
     | VarDecl
     | ReturnStmt
+    | IfStmt
+    | WhileStmt
     | Assignment
 
   ReturnStmt = "return" Expr
 
-  TraceStmt = "trace" "print" Expr
+  TraceStmt = "trace" Expr
 
   PrintStmt = "print" Expr
 
@@ -26,7 +28,11 @@ PiecePlus {
 
   Assignment = ident "=" Expr
 
-  Type = "int" | "float" | "str"
+  IfStmt = "if" Expr "{" Statement* "}" ("else" "{" Statement* "}")?
+
+  WhileStmt = "while" Expr "{" Statement* "}"
+
+  Type = "int" | "float" | "str" | "bool"
 
   Expr = CompExpr
 
@@ -37,26 +43,40 @@ PiecePlus {
   CompOp = "==" | "!=" | "<=" | ">=" | "<" | ">"
 
   AddExpr
-    = AddExpr "+" MulExpr  -- plus
+    = AddExpr "+" MulExpr   -- plus
+    | AddExpr "-" MulExpr   -- minus
     | MulExpr
 
   MulExpr
-    = CallExpr
+    = MulExpr "*" UnaryExpr  -- times
+    | MulExpr "/" UnaryExpr  -- divide
+    | UnaryExpr
+
+  UnaryExpr
+    = "-" UnaryExpr          -- negate
     | Primary
 
-  CallExpr = ident "(" ArgList? ")"
-
-  ArgList = Arg ("," Arg)*
-
-  Arg = Expr
-
   Primary
-    = number
+    = "(" Expr ")"           -- paren
+    | boolLit
+    | number
+    | CallExpr
     | ident
     | String
 
+  CallExpr = ident "(" ArgList? ")"
+
+  ArgList = Expr ("," Expr)*
+
+  boolLit = "true" | "false"
+
   String = "\"" (~"\"" any)* "\""
 
-  ident = letter alnum*
+  // Keywords must not be usable as identifiers
+  keyword = ("func" | "return" | "print" | "trace" | "let"
+           | "if" | "else" | "while" | "true" | "false"
+           | "int" | "float" | "str" | "bool") ~alnum
+
+  ident = ~keyword letter alnum*
   number = digit+ ("." digit+)?
 }
