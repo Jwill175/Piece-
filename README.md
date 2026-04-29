@@ -178,4 +178,3 @@ test/
 ## Authors
 
 * Jabri Williams
-* (Add teammates if applicable)
