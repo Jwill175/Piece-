@@ -1,40 +1,88 @@
 PiecePlus {
   Program = (FunctionDecl | Statement)*
 
-  FunctionDecl = "func" ident "(" ParamList? ")" "->" Type "{" Statement* "}"
+  // ── Functions ──────────────────────────────────────────────────────────────
+
+  FunctionDecl = func ident "(" ParamList? ")" "->" ReturnType "{" Statement* "}"
 
   ParamList = Param ("," Param)*
 
   Param = Type ident
 
+  ReturnType = void | Type
+
+  // ── Statements ─────────────────────────────────────────────────────────────
+
   Statement
-    = TraceStmt
+    = IfStmt
+    | WhileStmt
+    | ForRangeStmt
+    | ForCStmt
+    | ReturnStmt
+    | BreakStmt
+    | ContinueStmt
+    | TraceStmt
     | PrintStmt
     | VarDecl
-    | ReturnStmt
-    | IfStmt
-    | WhileStmt
+    | IncrDecr
     | Assignment
 
-  ReturnStmt = "return" Expr
+  IfStmt     = if Expr "{" Statement* "}" ElifClause* ElseClause?
+  ElifClause = elif Expr "{" Statement* "}"
+  ElseClause = else "{" Statement* "}"
 
-  TraceStmt = "trace" Expr
+  WhileStmt = while Expr "{" Statement* "}"
 
-  PrintStmt = "print" Expr
+  // Python-style: for x in range(n)  or  for x in range(start, end)
+  ForRangeStmt = for ident in range "(" Expr ("," Expr)? ")" "{" Statement* "}"
+
+  // C-style: for (init; condition; update)
+  ForCStmt  = for "(" ForInit ";" Expr ";" ForUpdate ")" "{" Statement* "}"
+  ForInit   = VarDecl | Assignment
+  ForUpdate = IncrDecr | Assignment
+
+  ReturnStmt   = return Expr
+  BreakStmt    = break
+  ContinueStmt = continue
+
+  TraceStmt = trace Expr
+
+  PrintStmt = print Expr
 
   VarDecl
-    = "let" ident "=" Expr        -- dynamic
-    | Type ident "=" Expr         -- typed
+    = let ident "=" Expr      -- dynamic
+    | Type ident "=" Expr     -- typed
 
   Assignment = ident "=" Expr
 
-  IfStmt = "if" Expr "{" Statement* "}" ("else" "{" Statement* "}")?
+  // ++ and -- as standalone statements
+  IncrDecr
+    = ident "++"  -- increment
+    | ident "--"  -- decrement
 
-  WhileStmt = "while" Expr "{" Statement* "}"
+  // ── Types ──────────────────────────────────────────────────────────────────
 
-  Type = "int" | "float" | "str" | "bool"
+  Type
+    = int
+    | float
+    | str
+    | bool
 
-  Expr = CompExpr
+  // ── Expressions ────────────────────────────────────────────────────────────
+
+  Expr = OrExpr
+
+  OrExpr
+    = OrExpr or AndExpr   -- or
+    | AndExpr
+
+  AndExpr
+    = AndExpr and NotExpr  -- and
+    | NotExpr
+
+  NotExpr
+    = not NotExpr          -- not
+    | CompExpr
 
   CompExpr
     = AddExpr CompOp AddExpr  -- comparison
@@ -50,6 +98,7 @@ PiecePlus {
   MulExpr
     = MulExpr "*" UnaryExpr  -- times
     | MulExpr "/" UnaryExpr  -- divide
+    | MulExpr "%" UnaryExpr  -- mod
     | UnaryExpr
 
   UnaryExpr
@@ -58,6 +107,7 @@ PiecePlus {
 
   Primary
     = "(" Expr ")"           -- paren
+    | ListLiteral
     | boolLit
     | number
     | CallExpr
@@ -68,15 +118,49 @@ PiecePlus {
 
   ArgList = Expr ("," Expr)*
 
-  boolLit = "true" | "false"
+  // ── Literals ───────────────────────────────────────────────────────────────
+
+  ListLiteral = "[" ListItems? "]"
+  ListItems   = Expr ("," Expr)*
+
+  boolLit = (true | false) ~alnum
 
   String = "\"" (~"\"" any)* "\""
 
-  // Keywords must not be usable as identifiers
-  keyword = ("func" | "return" | "print" | "trace" | "let"
-           | "if" | "else" | "while" | "true" | "false"
-           | "int" | "float" | "str" | "bool") ~alnum
+  // ── Keywords ───────────────────────────────────────────────────────────────
 
-  ident = ~keyword letter alnum*
+  keyword
+    = func | let | return | trace | print
+    | if | elif | else | while | for | in | range
+    | break | continue
+    | and | or | not
+    | int | float | str | bool | void | true | false
+
+  func     = "func"     ~alnum
+  let      = "let"      ~alnum
+  return   = "return"   ~alnum
+  trace    = "trace"    ~alnum
+  print    = "print"    ~alnum
+  if       = "if"       ~alnum
+  elif     = "elif"     ~alnum
+  else     = "else"     ~alnum
+  while    = "while"    ~alnum
+  for      = "for"      ~alnum
+  in       = "in"       ~alnum
+  range    = "range"    ~alnum
+  break    = "break"    ~alnum
+  continue = "continue" ~alnum
+  and      = "and"      ~alnum
+  or       = "or"       ~alnum
+  not      = "not"      ~alnum
+  int      = "int"      ~alnum
+  float    = "float"    ~alnum
+  str      = "str"      ~alnum
+  bool     = "bool"     ~alnum
+  void     = "void"     ~alnum
+  true     = "true"     ~alnum
+  false    = "false"    ~alnum
+
+  ident (an identifier) = ~keyword letter alnum*
   number = digit+ ("." digit+)?
 }

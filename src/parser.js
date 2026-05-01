@@ -92,12 +92,12 @@ const semantics = grammar.createSemantics().addOperation("ast", {
     };
   },
 
-  TraceStmt(_trace, _print, expr) {
-    return {
-      kind: "Trace",
-      argument: expr.ast(),
-    };
-  },
+  TraceStmt(_trace, expr) {
+  return {
+    kind: "Trace",
+    argument: expr.ast(),
+  };
+},
 
   VarDecl_dynamic(_let, id, _eq, expr) {
     return {
@@ -181,9 +181,6 @@ const semantics = grammar.createSemantics().addOperation("ast", {
     return args;
   },
 
-  Arg(expr) {
-    return expr.ast();
-  },
 
   Primary(expr) {
     return expr.ast();
