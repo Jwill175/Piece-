@@ -1,5 +1,5 @@
 # Piece+
-<img width="1561" height="1536" alt="IMG_6703" src="https://github.com/user-attachments/assets/79a444ae-f410-4b2d-af22-761e6d5f8102" />
+<img width="1254" height="1254" alt="image" src="https://github.com/user-attachments/assets/88a3e6a0-262f-4338-920c-1122816084fb" />
 
 ## A Beginner-Friendly Bridge Between Python and C
 
