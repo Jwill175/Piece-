@@ -178,3 +178,4 @@ test/
 ## Authors
 
 * Jabri Williams
+* Carson Rhodes
